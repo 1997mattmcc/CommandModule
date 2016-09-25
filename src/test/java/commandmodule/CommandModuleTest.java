@@ -1,9 +1,9 @@
 package commandmodule;
 
 import commandmodule.interfaces.generics.Command.CommandBuilder;
-import commandmodule.interfaces.defaults.ArgumentLogical;
+import commandmodule.interfaces.defaults.arguments.ArgumentLogical;
 import commandmodule.utils.StringComparator.Comparators;
-import commandmodule.interfaces.defaults.ArgumentString;
+import commandmodule.interfaces.defaults.arguments.ArgumentString;
 import commandmodule.interfaces.generics.Command;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.api.IDiscordClient;

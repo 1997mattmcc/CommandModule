@@ -11,11 +11,9 @@ public interface ICommand {
 
     public abstract IArgument[][] getArgumentChains();
 
+    public abstract String getUniqueNameOrID();
+
     public abstract String getDescription();
-
-    public abstract String getUniqueID();
-
-    public abstract String getName();
 
     public default boolean process(IMessage message) {
         Optional<IContext> optional = this.applyArguments(message);

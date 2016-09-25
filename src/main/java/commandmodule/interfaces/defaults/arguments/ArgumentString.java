@@ -1,4 +1,4 @@
-package commandmodule.interfaces.defaults;
+package commandmodule.interfaces.defaults.arguments;
 
 import commandmodule.interfaces.generics.Context.ContextBuilder;
 import commandmodule.utils.StringComparator.Comparators;

@@ -12,9 +12,8 @@ public final class Command implements ICommand {
 
     private final Consumer<IContext> consumer;
     private final IArgument[][] argumentChains;
+    private final String uniqueNameOrID;
     private final String description;
-    private final String uniqueID;
-    private final String name;
 
     public Command(CommandBuilder builder) {
         this.argumentChains = new IArgument[builder.argumentChains.size()][];
@@ -22,10 +21,9 @@ public final class Command implements ICommand {
             List<IArgument> arguments = builder.argumentChains.get(i);
             argumentChains[i] = arguments.toArray(new IArgument[arguments.size()]);
         }
+        this.uniqueNameOrID = builder.uniqueNameOrID;
         this.description = builder.description;
-        this.uniqueID = builder.uniqueID;
         this.consumer = builder.consumer;
-        this.name = builder.name;
     }
 
     @Override
@@ -44,28 +42,22 @@ public final class Command implements ICommand {
     }
 
     @Override
-    public String getUniqueID() {
-        return uniqueID;
-    }
-
-    @Override
-    public String getName() {
-        return name;
+    public String getUniqueNameOrID() {
+        return uniqueNameOrID;
     }
 
     public static final class CommandBuilder {
 
         //Required
-        private final String uniqueID;
+        private final String uniqueNameOrID;
 
         //Optional
         private Consumer<IContext> consumer = context -> Discord4J.LOGGER.debug("This argument does not do anything...");
         private List<List<IArgument>> argumentChains = new ArrayList<>();
         private String description = new String();
-        private String name = new String();
 
-        public CommandBuilder(String uniqueID) {
-            this.uniqueID = uniqueID;
+        public CommandBuilder(String uniqueNameOrID) {
+            this.uniqueNameOrID = uniqueNameOrID;
         }
 
         public final CommandBuilder argumentChains(List<List<IArgument>> arguments) {
@@ -95,11 +87,6 @@ public final class Command implements ICommand {
 
         public final CommandBuilder next(IArgument argument) {
             this.argumentChains.get(argumentChains.size() - 1).add(argument);
-            return this;
-        }
-
-        public final CommandBuilder name(String name) {
-            this.name = name;
             return this;
         }
 

@@ -1,38 +1,38 @@
-package commandmodule.interfaces.defaults;
+package commandmodule.interfaces.defaults.arguments;
 
 import commandmodule.interfaces.generics.Context.ContextBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 import sx.blah.discord.handle.obj.IMessage;
 import commandmodule.interfaces.IArgument;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.Objects;
 
-public class ArgumentBigInteger implements IArgument {
+public class ArgumentBigDecimal implements IArgument {
 
-    private final BigInteger minInteger;
-    private final BigInteger maxInteger;
+    private final BigDecimal minDecimal;
+    private final BigDecimal maxDecimal;
     private final boolean round;
 
-    public ArgumentBigInteger(BigInteger minInteger, BigInteger maxInteger, boolean round) {
+    public ArgumentBigDecimal(BigDecimal minDecimal, BigDecimal maxDecimal, boolean round) {
         this.round = round;
-        this.minInteger = minInteger;
-        this.maxInteger = maxInteger;
+        this.minDecimal = minDecimal;
+        this.maxDecimal = maxDecimal;
     }
 
     @Override
     public Boolean applyArgument(ContextBuilder builder, String string) {
-        if (NumberUtils.isNumber(string) && !string.contains(".")) {
-            BigInteger bigInteger = new BigInteger(string);
-            int minCompare = bigInteger.compareTo(minInteger);
-            int maxCompare = bigInteger.compareTo(maxInteger);
+        if (NumberUtils.isNumber(string)) {
+            BigDecimal bigDecimal = new BigDecimal(string);
+            int minCompare = bigDecimal.compareTo(minDecimal);
+            int maxCompare = bigDecimal.compareTo(maxDecimal);
             if ((minCompare == 1 || minCompare == 0) && (maxCompare == -1 || minCompare == 0)) {
-                builder.setBigInteger(bigInteger);
+                builder.setBigDecimal(bigDecimal);
                 return true;
             } else if (round && !(minCompare == 1 || minCompare == 0)) {
-                builder.setBigInteger(minInteger);
+                builder.setBigDecimal(minDecimal);
                 return true;
             } else if (round && !(maxCompare == -1 || minCompare == 0)) {
-                builder.setBigInteger(maxInteger);
+                builder.setBigDecimal(maxDecimal);
                 return true;
             }
         }
@@ -51,13 +51,13 @@ public class ArgumentBigInteger implements IArgument {
 
     @Override
     public String getDescription() {
-        String minString = Objects.isNull(minInteger) ? "-∞" : minInteger.toString();
-        String maxString = Objects.isNull(maxInteger) ? "∞" : maxInteger.toString();
+        String minString = Objects.isNull(minDecimal) ? "-∞" : minDecimal.toString();
+        String maxString = Objects.isNull(maxDecimal) ? "∞" : maxDecimal.toString();
         return String.format("%s : %s ≤ x ≤ %s", this.getName(), minString, maxString);
     }
 
     @Override
     public String getName() {
-        return "integer";
+        return "deciaml";
     }
 }
