@@ -71,7 +71,7 @@ public class CommandModule implements IModule, IListener<MessageReceivedEvent> {
 
     @Override
     public final String getVersion() {
-        return "0.0.2";
+        return "0.0.3";
     }
 
     @Override
