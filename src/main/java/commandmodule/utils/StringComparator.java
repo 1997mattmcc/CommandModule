@@ -55,4 +55,23 @@ public final class StringComparator {
             return description;
         }
     };
+
+    public static enum Comparators {
+        STARTS_WITH_IGNORE_CASE(new StringComparator(Options.STARTS_WITH, true)),
+        CONTAINS_IGNORE_CASE(new StringComparator(Options.CONTAINS, true)),
+        EQUALS_IGNORE_CASE(new StringComparator(Options.EQUALS, true)),
+        STARTS_WITH(new StringComparator(Options.STARTS_WITH, false)),
+        CONTAINS(new StringComparator(Options.CONTAINS, false)),
+        EQUALS(new StringComparator(Options.EQUALS, false));
+
+        private final StringComparator stringComparator;
+
+        private Comparators(StringComparator stringComparator) {
+            this.stringComparator = stringComparator;
+        }
+
+        public StringComparator getStringComparator() {
+            return stringComparator;
+        }
+    }
 }
