@@ -11,13 +11,17 @@ import java.util.List;
 public final class Command implements ICommand {
 
     private final Consumer<IContext> consumer;
-    private final IArgument[] arguments;
+    private final IArgument[][] argumentChains;
     private final String description;
     private final String uniqueID;
     private final String name;
 
     public Command(CommandBuilder builder) {
-        this.arguments = builder.arguments.toArray(new IArgument[builder.arguments.size()]);
+        this.argumentChains = new IArgument[builder.argumentChains.size()][];
+        for (int i = 0; i < builder.argumentChains.size(); i++) {
+            List<IArgument> arguments = builder.argumentChains.get(i);
+            argumentChains[i] = arguments.toArray(new IArgument[arguments.size()]);
+        }
         this.description = builder.description;
         this.uniqueID = builder.uniqueID;
         this.consumer = builder.consumer;
@@ -30,8 +34,8 @@ public final class Command implements ICommand {
     }
 
     @Override
-    public IArgument[] getArguments() {
-        return arguments;
+    public IArgument[][] getArgumentChains() {
+        return argumentChains;
     }
 
     @Override
@@ -56,7 +60,7 @@ public final class Command implements ICommand {
 
         //Optional
         private Consumer<IContext> consumer = context -> Discord4J.LOGGER.debug("This argument does not do anything...");
-        private List<IArgument> arguments = new ArrayList<>();
+        private List<List<IArgument>> argumentChains = new ArrayList<>();
         private String description = new String();
         private String name = new String();
 
@@ -64,13 +68,18 @@ public final class Command implements ICommand {
             this.uniqueID = uniqueID;
         }
 
-        public final CommandBuilder consumer(Consumer<IContext> consumer) {
-            this.consumer = consumer;
+        public final CommandBuilder argumentChains(List<List<IArgument>> arguments) {
+            this.argumentChains = arguments;
             return this;
         }
 
-        public final CommandBuilder arguments(List<IArgument> arguments) {
-            this.arguments = arguments;
+        public final CommandBuilder argumentChain(List<IArgument> argumentChain) {
+            this.argumentChains.add(argumentChain);
+            return this;
+        }
+
+        public final CommandBuilder consumer(Consumer<IContext> consumer) {
+            this.consumer = consumer;
             return this;
         }
 
@@ -79,8 +88,13 @@ public final class Command implements ICommand {
             return this;
         }
 
+        public final CommandBuilder newChain(IArgument argument) {
+            this.argumentChains.add(new ArrayList<>());
+            return this.next(argument);
+        }
+
         public final CommandBuilder next(IArgument argument) {
-            this.arguments.add(argument);
+            this.argumentChains.get(argumentChains.size() - 1).add(argument);
             return this;
         }
 

@@ -1,24 +1,34 @@
 package commandmodule.interfaces.defaults;
 
 import commandmodule.interfaces.generics.Context.ContextBuilder;
+import commandmodule.utils.StringComparator.Comparators;
 import commandmodule.utils.StringComparator;
 import sx.blah.discord.handle.obj.IMessage;
 import commandmodule.interfaces.IArgument;
 
 public class ArgumentLogical implements IArgument {
 
-    private final StringComparator comparator;
+    private final StringComparator stringComparator;
 
-    public ArgumentLogical(StringComparator comparator) {
-        this.comparator = comparator;
+    public ArgumentLogical() {
+        this(Comparators.EQUALS_IGNORE_CASE);
+    }
+
+    public ArgumentLogical(Comparators comparator) {
+        this.stringComparator = comparator.getStringComparator();
+    }
+
+    public ArgumentLogical(StringComparator stringComparator) {
+        this.stringComparator = stringComparator;
     }
 
     @Override
     public Boolean applyArgument(ContextBuilder builder, String string) {
-        if (comparator.compare(string, "true") || comparator.compare(string, "1")) {
+        System.out.println("BOOLEAN : " + string);
+        if (stringComparator.compare(string, "true") || stringComparator.compare(string, "1")) {
             builder.setLogical(true);
             return true;
-        } else if (comparator.compare(string, "false") || comparator.compare(string, "0")) {
+        } else if (stringComparator.compare(string, "false") || stringComparator.compare(string, "0")) {
             builder.setLogical(false);
             return true;
         }
