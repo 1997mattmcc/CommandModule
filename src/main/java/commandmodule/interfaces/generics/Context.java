@@ -1,5 +1,7 @@
 package commandmodule.interfaces.generics;
 
+import commandmodule.interfaces.IArgument;
+import commandmodule.interfaces.ICommand;
 import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.api.IDiscordClient;
@@ -11,17 +13,21 @@ import java.util.Optional;
 public final class Context implements IContext {
 
     private final IVoiceChannel voiceChannel;
+    private final IArgument[] argumentChain;
     private final IDiscordClient client;
     private final BigDecimal bigDecimal;
     private final BigInteger bigInteger;
     private final IMessage message;
+    private final ICommand command;
     private final Boolean logical;
     private final String string;
 
     public Context(ContextBuilder builder) {
+        this.argumentChain = builder.argumentChain;
         this.voiceChannel = builder.voiceChannel;
         this.bigDecimal = builder.bigDecimal;
         this.bigInteger = builder.bigInteger;
+        this.command = builder.command;
         this.message = builder.message;
         this.logical = builder.logical;
         this.client = builder.client;
@@ -84,14 +90,26 @@ public final class Context implements IContext {
     }
 
     @Override
+    public IArgument[] getArgumentChain() {
+        return argumentChain;
+    }
+
+    @Override
     public final IMessage getMessage() {
         return message;
+    }
+
+    @Override
+    public ICommand getCommand() {
+        return command;
     }
 
     public static final class ContextBuilder {
 
         //Required
+        private final IArgument[] argumentChain;
         private final IDiscordClient client;
+        private final ICommand command;
         private final IMessage message;
 
         //Optional
@@ -101,8 +119,10 @@ public final class Context implements IContext {
         private Boolean logical = null;
         private String string = null;
 
-        public ContextBuilder(IMessage message) {
+        public ContextBuilder(ICommand command, IArgument[] argumentChain, IMessage message) {
+            this.argumentChain = argumentChain;
             this.client = message.getClient();
+            this.command = command;
             this.message = message;
         }
 
@@ -131,8 +151,16 @@ public final class Context implements IContext {
             return this;
         }
 
+        public IArgument[] getArgumentChain() {
+            return argumentChain;
+        }
+
         public IDiscordClient getClient() {
             return client;
+        }
+
+        public ICommand getCommand() {
+            return command;
         }
 
         public IMessage getMessage() {

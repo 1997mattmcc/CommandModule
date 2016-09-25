@@ -9,9 +9,13 @@ import java.util.Optional;
 
 public interface IContext {
 
+    public abstract IArgument[] getArgumentChain();
+
     public abstract IDiscordClient getClient();
 
     public abstract IMessage getMessage();
+
+    public abstract ICommand getCommand();
 
     public abstract Optional<IVoiceChannel> getVoiceChannelOptinoal();
 
