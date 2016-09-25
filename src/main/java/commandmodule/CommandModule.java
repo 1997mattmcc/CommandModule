@@ -55,6 +55,7 @@ public class CommandModule implements IModule, IListener<MessageReceivedEvent> {
         if (!Objects.isNull(discordClient)) {
             discordClient.getDispatcher().unregisterListener(this);
             COMMAND_MODULES.remove(discordClient);
+            discordClient = null;
         }
     }
 
