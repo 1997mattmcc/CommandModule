@@ -25,8 +25,8 @@ public final class Command implements ICommand {
     }
 
     @Override
-    public Consumer<IContext> getConsumer() {
-        return consumer;
+    public void invoke(IContext context) {
+        consumer.accept(context);
     }
 
     @Override

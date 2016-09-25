@@ -50,7 +50,7 @@ public class Permutationer {
         return this.nextPermutationToMatchInternal(lower, upper);
     }
 
-    public final boolean nextPermutationToMatchInternal(int[] lower, int[] upper) {
+    private final boolean nextPermutationToMatchInternal(int[] lower, int[] upper) {
         if (this.nextPermutation()) {
             for (int i = 0; i < blueprint.length; i++) {
                 if (blueprint[i] < lower[i] || blueprint[i] > upper[i]) {

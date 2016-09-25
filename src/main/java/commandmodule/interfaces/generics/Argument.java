@@ -3,98 +3,84 @@ package commandmodule.interfaces.generics;
 import commandmodule.interfaces.generics.Context.ContextBuilder;
 import sx.blah.discord.handle.obj.IMessage;
 import commandmodule.interfaces.IArgument;
-import java.util.function.BiPredicate;
-import java.util.function.BiConsumer;
-import sx.blah.discord.Discord4J;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public final class Argument implements IArgument {
 
-    private final BiConsumer<ContextBuilder, String> consumer;
-    private final BiPredicate<IMessage, String> predicate;
-    private final Integer minWordCount;
-    private final Integer maxWordCount;
+    private final BiFunction<ContextBuilder, String, Boolean> argument;
+    private final Function<IMessage, Integer> lowerWordCountBound;
+    private final Function<IMessage, Integer> upperWordCountBound;
     private final String description;
     private final String name;
 
     public Argument(ArgumentBuilder builder) {
-        this.minWordCount = builder.minWordCount;
-        this.maxWordCount = builder.maxWordCount;
+        this.lowerWordCountBound = builder.lowerWordCountBound;
+        this.upperWordCountBound = builder.upperWordCountBound;
         this.description = builder.description;
-        this.predicate = builder.predicate;
-        this.consumer = builder.consumer;
+        this.argument = builder.argument;
         this.name = builder.name;
     }
 
     @Override
-    public final boolean test(IMessage message, String string) {
-        return predicate.test(message, string);
+    public final Boolean applyArgument(ContextBuilder builder, String string) {
+        return argument.apply(builder, name);
     }
 
     @Override
-    public final void accept(ContextBuilder contextBuilder, String string) {
-        consumer.accept(contextBuilder, string);
+    public final Integer getLowerWordCountBound(IMessage message) {
+        return lowerWordCountBound.apply(message);
     }
 
     @Override
-    public final int getLowerRequiredWordCountBound() {
-        return minWordCount;
+    public final Integer getUpperWordCountBound(IMessage message) {
+        return upperWordCountBound.apply(message);
     }
 
     @Override
-    public final int getUpperRequiredWordCountBound() {
-        return maxWordCount;
-    }
-
-    @Override
-    public String getDescription() {
+    public final String getDescription() {
         return description;
     }
 
     @Override
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
     public static final class ArgumentBuilder {
 
-        private BiConsumer<ContextBuilder, String> consumer = (message, string) -> Discord4J.LOGGER.debug("This argument does not do anything...");
-        private BiPredicate<IMessage, String> predicate = (message, string) -> true;
-        private int maxWordCount = IMessage.MAX_MESSAGE_LENGTH;
+        private Function<IMessage, Integer> upperWordCountBound = message -> IMessage.MAX_MESSAGE_LENGTH;
+        private BiFunction<ContextBuilder, String, Boolean> argument = (builder, string) -> true;
+        private Function<IMessage, Integer> lowerWordCountBound = message -> 0;
         private String description = new String();
         private String name = new String();
-        private int minWordCount = 0;
 
-        public final ArgumentBuilder predicate(BiPredicate<IMessage, String> predicate) {
-            this.predicate = predicate;
+        public final ArgumentBuilder setUpperWordCountBound(Function<IMessage, Integer> upperWordCountBound) {
+            this.upperWordCountBound = upperWordCountBound;
             return this;
         }
 
-        public final ArgumentBuilder consumer(BiConsumer<ContextBuilder, String> consumer) {
-            this.consumer = consumer;
+        public final ArgumentBuilder setArgument(BiFunction<ContextBuilder, String, Boolean> argument) {
+            this.argument = argument;
             return this;
         }
 
-        public final ArgumentBuilder description(String description) {
+        public final ArgumentBuilder setLowerWordCountBound(Function<IMessage, Integer> lowerWordCountBound) {
+            this.lowerWordCountBound = lowerWordCountBound;
+            return this;
+        }
+
+        public final ArgumentBuilder setDescription(String description) {
             this.description = description;
             return this;
         }
 
-        public final ArgumentBuilder min(int minWordCount) {
-            this.minWordCount = minWordCount;
-            return this;
-        }
-
-        public final ArgumentBuilder max(int maxWordCount) {
-            this.maxWordCount = maxWordCount;
-            return this;
-        }
-
-        public final ArgumentBuilder name(String name) {
+        public final ArgumentBuilder setName(String name) {
             this.name = name;
             return this;
         }
 
-        public final IArgument build() {
+        public final Argument build() {
             return new Argument(this);
         }
     }

@@ -4,56 +4,83 @@ import sx.blah.discord.handle.obj.IVoiceChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.api.IDiscordClient;
 import commandmodule.interfaces.IContext;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Optional;
 
 public final class Context implements IContext {
 
     private final IVoiceChannel voiceChannel;
     private final IDiscordClient client;
+    private final BigDecimal bigDecimal;
+    private final BigInteger bigInteger;
     private final IMessage message;
-    private final Double doubleVal;
     private final Boolean logical;
     private final String string;
-    private final Long longVal;
 
     public Context(ContextBuilder builder) {
         this.voiceChannel = builder.voiceChannel;
-        this.doubleVal = builder.doubleVal;
+        this.bigDecimal = builder.bigDecimal;
+        this.bigInteger = builder.bigInteger;
         this.message = builder.message;
         this.logical = builder.logical;
-        this.longVal = builder.longVal;
         this.client = builder.client;
         this.string = builder.string;
     }
 
     @Override
-    public final Optional<IVoiceChannel> getVoiceChannel() {
+    public final Optional<IVoiceChannel> getVoiceChannelOptinoal() {
         return Optional.ofNullable(voiceChannel);
     }
 
     @Override
-    public final Optional<Boolean> getLogical() {
+    public final Optional<Boolean> getLogicalOptinoal() {
         return Optional.ofNullable(logical);
     }
 
     @Override
-    public final Optional<String> getString() {
+    public final Optional<String> getStringOptinoal() {
         return Optional.ofNullable(string);
     }
 
     @Override
-    public final Optional<Double> getDouble() {
-        return Optional.ofNullable(doubleVal);
+    public Optional<BigDecimal> getBigDecimalOptinoal() {
+        return Optional.ofNullable(bigDecimal);
+    }
+
+    @Override
+    public Optional<BigInteger> getBigIntegerOptinoal() {
+        return Optional.ofNullable(bigInteger);
+    }
+
+    @Override
+    public IVoiceChannel getVoiceChannel() {
+        return voiceChannel;
+    }
+
+    @Override
+    public BigDecimal getBigDecimal() {
+        return bigDecimal;
+    }
+
+    @Override
+    public BigInteger getBigInteger() {
+        return bigInteger;
+    }
+
+    @Override
+    public Boolean getLogical() {
+        return logical;
+    }
+
+    @Override
+    public String getString() {
+        return string;
     }
 
     @Override
     public final IDiscordClient getClient() {
         return client;
-    }
-
-    @Override
-    public final Optional<Long> getLong() {
-        return Optional.ofNullable(longVal);
     }
 
     @Override
@@ -69,10 +96,10 @@ public final class Context implements IContext {
 
         //Optional
         private IVoiceChannel voiceChannel = null;
-        private Double doubleVal = null;
+        private BigDecimal bigDecimal = null;
+        private BigInteger bigInteger = null;
         private Boolean logical = null;
         private String string = null;
-        private Long longVal = null;
 
         public ContextBuilder(IMessage message) {
             this.client = message.getClient();
@@ -84,8 +111,13 @@ public final class Context implements IContext {
             return this;
         }
 
-        public final ContextBuilder setDouble(Double doubleVal) {
-            this.doubleVal = doubleVal;
+        public final ContextBuilder setBigDecimal(BigDecimal bigDecimal) {
+            this.bigDecimal = bigDecimal;
+            return this;
+        }
+
+        public final ContextBuilder setBigInteger(BigInteger bigInteger) {
+            this.bigInteger = bigInteger;
             return this;
         }
 
@@ -99,9 +131,12 @@ public final class Context implements IContext {
             return this;
         }
 
-        public final ContextBuilder setLong(Long longVal) {
-            this.longVal = longVal;
-            return this;
+        public IDiscordClient getClient() {
+            return client;
+        }
+
+        public IMessage getMessage() {
+            return message;
         }
 
         public Context build() {

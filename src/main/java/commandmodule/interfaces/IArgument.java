@@ -2,22 +2,26 @@ package commandmodule.interfaces;
 
 import commandmodule.interfaces.generics.Context.ContextBuilder;
 import sx.blah.discord.handle.obj.IMessage;
-import java.util.function.BiPredicate;
-import java.util.function.BiConsumer;
 
-public interface IArgument extends BiPredicate<IMessage, String>, BiConsumer<ContextBuilder, String> {
+public interface IArgument {
 
-    @Override
-    public abstract boolean test(IMessage message, String string);
+    public abstract Boolean applyArgument(ContextBuilder builder, String string);
 
-    @Override
-    public abstract void accept(ContextBuilder builder, String string);
+    public abstract Integer getLowerWordCountBound(IMessage message);
 
-    public abstract int getLowerRequiredWordCountBound();
-
-    public abstract int getUpperRequiredWordCountBound();
+    public abstract Integer getUpperWordCountBound(IMessage message);
 
     public abstract String getDescription();
 
     public abstract String getName();
+
+    public default boolean process(ContextBuilder builder, String string) {
+        int lowerBound = this.getLowerWordCountBound(builder.getMessage());
+        int upperBound = this.getUpperWordCountBound(builder.getMessage());
+        int length = string.split(" ").length;
+        if (!(length < lowerBound || length > upperBound)) {
+            return this.applyArgument(builder, string);
+        }
+        return false;
+    }
 }

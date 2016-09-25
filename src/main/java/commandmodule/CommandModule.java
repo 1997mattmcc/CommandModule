@@ -1,15 +1,15 @@
 package commandmodule;
 
-import commandmodule.interfaces.ICommand;
-import java.util.ArrayList;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.api.events.IListener;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.api.IDiscordClient;
+import commandmodule.interfaces.ICommand;
 import sx.blah.discord.modules.IModule;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.HashMap;
 import java.util.List;
-import sx.blah.discord.handle.obj.IMessage;
 
 public class CommandModule implements IModule, IListener<MessageReceivedEvent> {
 
