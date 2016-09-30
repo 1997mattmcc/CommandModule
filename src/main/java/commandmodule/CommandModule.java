@@ -4,8 +4,8 @@ import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.api.events.IListener;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.api.IDiscordClient;
-import commandmodule.interfaces.ICommand;
 import sx.blah.discord.modules.IModule;
+import commandmodule.command.ICommand;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.HashMap;
@@ -32,6 +32,10 @@ public class CommandModule implements IModule, IListener<MessageReceivedEvent> {
 
     public final void unregisterCommand(ICommand command) {
         commands.remove(command);
+    }
+
+    public final List<ICommand> getCommands() {
+        return commands;
     }
 
     @Override

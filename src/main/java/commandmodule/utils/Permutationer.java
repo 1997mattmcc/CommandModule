@@ -2,7 +2,6 @@ package commandmodule.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import java.util.stream.IntStream;
-import java.util.Objects;
 import java.util.Arrays;
 
 public class Permutationer {
@@ -11,7 +10,6 @@ public class Permutationer {
     private final String[] words;
 
     public Permutationer(String[] words, int length) {
-        Objects.requireNonNull(length < 1 ? null : length, String.format("Length is less than 1: %s", length));
         this.blueprint = new int[length];
         this.words = words;
     }
@@ -76,8 +74,9 @@ public class Permutationer {
     }
 
     public final String[] buildPermutation() {
-        for (int i = 0; i < words.length; i++) {
-            words[i] = this.buildPermutation(i);
+        String[] built = new String[blueprint.length];
+        for (int i = 0; i < built.length; i++) {
+            built[i] = this.buildPermutation(i);
         }
         return words;
     }

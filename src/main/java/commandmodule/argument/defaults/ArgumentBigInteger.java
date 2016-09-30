@@ -1,9 +1,8 @@
-package commandmodule.interfaces.defaults.arguments;
+package commandmodule.argument.defaults;
 
-import commandmodule.interfaces.generics.Context.ContextBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
-import sx.blah.discord.handle.obj.IMessage;
-import commandmodule.interfaces.IArgument;
+import commandmodule.context.ContextBuilder;
+import commandmodule.argument.IArgument;
 import java.math.BigInteger;
 import java.util.Objects;
 
@@ -13,10 +12,16 @@ public class ArgumentBigInteger implements IArgument {
     private final BigInteger maxInteger;
     private final boolean round;
 
+    public ArgumentBigInteger() {
+        this.minInteger = null;
+        this.maxInteger = null;
+        this.round = false;
+    }
+
     public ArgumentBigInteger(BigInteger minInteger, BigInteger maxInteger, boolean round) {
-        this.round = round;
         this.minInteger = minInteger;
         this.maxInteger = maxInteger;
+        this.round = round;
     }
 
     @Override
@@ -40,20 +45,10 @@ public class ArgumentBigInteger implements IArgument {
     }
 
     @Override
-    public Integer getLowerWordCountBound(IMessage message) {
-        return 1;
-    }
-
-    @Override
-    public Integer getUpperWordCountBound(IMessage message) {
-        return 1;
-    }
-
-    @Override
     public String getDescription() {
         String minString = Objects.isNull(minInteger) ? "-∞" : minInteger.toString();
         String maxString = Objects.isNull(maxInteger) ? "∞" : maxInteger.toString();
-        return String.format("%s : %s ≤ x ≤ %s", this.getName(), minString, maxString);
+        return String.format("[%s : %s ≤ x ≤ %s]", this.getName(), minString, maxString);
     }
 
     @Override

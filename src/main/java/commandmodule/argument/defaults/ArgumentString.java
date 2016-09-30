@@ -1,18 +1,30 @@
-package commandmodule.interfaces.defaults.arguments;
+package commandmodule.argument.defaults;
 
-import commandmodule.interfaces.generics.Context.ContextBuilder;
 import commandmodule.utils.StringComparator.Comparators;
 import commandmodule.utils.StringComparator;
+import commandmodule.context.ContextBuilder;
 import sx.blah.discord.handle.obj.IMessage;
-import commandmodule.interfaces.IArgument;
+import commandmodule.argument.IArgument;
 
 public class ArgumentString implements IArgument {
 
     private final StringComparator stringComparator;
     private final boolean setString;
-    private final String string;
     private final int lowerBound;
     private final int upperBound;
+    private final String string;
+
+    public ArgumentString() {
+        this("", Comparators.STARTS_WITH_IGNORE_CASE, true);
+    }
+
+    public ArgumentString(String string) {
+        this(string, Comparators.EQUALS_IGNORE_CASE, false);
+    }
+
+    public ArgumentString(String string, Comparators comparator) {
+        this(string, comparator, true);
+    }
 
     public ArgumentString(String string, Comparators comparator, boolean setString) {
         this(string, comparator.getStringComparator(), setString);
@@ -46,18 +58,18 @@ public class ArgumentString implements IArgument {
     }
 
     @Override
-    public Integer getLowerWordCountBound(IMessage message) {
+    public Integer getLowerBound(IMessage message) {
         return lowerBound;
     }
 
     @Override
-    public Integer getUpperWordCountBound(IMessage message) {
+    public Integer getUpperBound(IMessage message) {
         return upperBound;
     }
 
     @Override
     public String getDescription() {
-        return String.format("%s : %s", string, stringComparator.toString());
+        return String.format("[%s : %s]", string, stringComparator.toString());
     }
 
     @Override

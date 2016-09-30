@@ -1,13 +1,15 @@
-package commandmodule.interfaces;
+package commandmodule.command;
 
-import commandmodule.interfaces.generics.Context.ContextBuilder;
+import commandmodule.context.ContextBuilder;
 import sx.blah.discord.handle.obj.IMessage;
 import commandmodule.utils.Permutationer;
+import commandmodule.argument.IArgument;
+import commandmodule.context.Context;
 import java.util.Optional;
 
 public interface ICommand {
 
-    public abstract void invoke(IContext context);
+    public abstract void invoke(Context context);
 
     public abstract IArgument[][] getArgumentChains();
 
@@ -16,25 +18,24 @@ public interface ICommand {
     public abstract String getDescription();
 
     public default boolean process(IMessage message) {
-        Optional<IContext> optional = this.applyArguments(message);
+        Optional<Context> optional = this.applyArguments(message);
         if (optional.isPresent()) {
-            IContext context = optional.get();
+            Context context = optional.get();
             this.invoke(context);
             return true;
         }
         return false;
     }
 
-    public default Optional<IContext> applyArguments(IMessage message) {
+    public default Optional<Context> applyArguments(IMessage message) {
         IArgument[][] argumentChains = this.getArgumentChains();
         int[][] lowerBound = this.getAllLowerWordCountBounds(message);
-        int[][] upperBound = this.getAllLowerWordCountBounds(message);
+        int[][] upperBound = this.getAllUpperWordCountBounds(message);
         String[] content = message.getContent().split(" ");
         for (int i = 0; i < argumentChains.length; i++) {
-            System.out.println("TESTING ARGUMENT : " + i + " with length " + argumentChains[i].length);
             Permutationer permutationer = new Permutationer(content, argumentChains[i].length);
             while (permutationer.nextPermutationToMatch(lowerBound[i], upperBound[i])) {
-                ContextBuilder builder = new ContextBuilder(this, argumentChains[i], message);
+                ContextBuilder builder = new ContextBuilder(this, message);
                 for (int j = 0; j < argumentChains[i].length; j++) {
                     if (!argumentChains[i][j].process(builder, permutationer.buildPermutation(j))) {
                         break;
@@ -53,7 +54,7 @@ public interface ICommand {
         for (int i = 0; i < argumentChains.length; i++) {
             lower[i] = new int[argumentChains[i].length];
             for (int j = 0; j < lower[i].length; j++) {
-                lower[i][j] = argumentChains[i][j].getLowerWordCountBound(message);
+                lower[i][j] = argumentChains[i][j].getLowerBound(message);
             }
         }
         return lower;
@@ -65,9 +66,26 @@ public interface ICommand {
         for (int i = 0; i < argumentChains.length; i++) {
             upper[i] = new int[argumentChains[i].length];
             for (int j = 0; j < upper[i].length; j++) {
-                upper[i][j] = argumentChains[i][j].getUpperWordCountBound(message);
+                upper[i][j] = argumentChains[i][j].getUpperBound(message);
             }
         }
         return upper;
+    }
+
+    public default String[] generateUsageMessages(boolean detailed) {
+        IArgument[][] argumentChains = this.getArgumentChains();
+        String[] messages = new String[argumentChains.length];
+        for (int i = 0; i < argumentChains.length; i++) {
+            String[] argumentChain = new String[argumentChains[i].length];
+            for (int j = 0; j < argumentChains[i].length; j++) {
+                if (detailed) {
+                    argumentChain[j] = argumentChains[i][j].getDescription();
+                } else {
+                    argumentChain[j] = argumentChains[i][j].getName();
+                }
+            }
+            messages[i] = String.join(" ", argumentChain);
+        }
+        return messages;
     }
 }

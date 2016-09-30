@@ -1,9 +1,8 @@
-package commandmodule.interfaces.defaults.arguments;
+package commandmodule.argument.defaults;
 
-import commandmodule.interfaces.generics.Context.ContextBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
-import sx.blah.discord.handle.obj.IMessage;
-import commandmodule.interfaces.IArgument;
+import commandmodule.context.ContextBuilder;
+import commandmodule.argument.IArgument;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -13,10 +12,16 @@ public class ArgumentBigDecimal implements IArgument {
     private final BigDecimal maxDecimal;
     private final boolean round;
 
+    public ArgumentBigDecimal() {
+        this.minDecimal = null;
+        this.maxDecimal = null;
+        this.round = false;
+    }
+
     public ArgumentBigDecimal(BigDecimal minDecimal, BigDecimal maxDecimal, boolean round) {
-        this.round = round;
         this.minDecimal = minDecimal;
         this.maxDecimal = maxDecimal;
+        this.round = round;
     }
 
     @Override
@@ -40,20 +45,10 @@ public class ArgumentBigDecimal implements IArgument {
     }
 
     @Override
-    public Integer getLowerWordCountBound(IMessage message) {
-        return 1;
-    }
-
-    @Override
-    public Integer getUpperWordCountBound(IMessage message) {
-        return 1;
-    }
-
-    @Override
     public String getDescription() {
         String minString = Objects.isNull(minDecimal) ? "-∞" : minDecimal.toString();
         String maxString = Objects.isNull(maxDecimal) ? "∞" : maxDecimal.toString();
-        return String.format("%s : %s ≤ x ≤ %s", this.getName(), minString, maxString);
+        return String.format("[%s : %s ≤ x ≤ %s]", this.getName(), minString, maxString);
     }
 
     @Override
